@@ -1,0 +1,2 @@
+# websocket-server
+基于websocket和nestjs开发数据交互的后端服务

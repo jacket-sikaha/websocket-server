@@ -9,6 +9,8 @@ async function bootstrap() {
     AK: process.env.BDAK,
     SK: process.env.BDSK,
   });
-  await app.listen(3000);
+  await app.listen(3000, () => {
+    console.log('welcome to http://localhost:3000');
+  });
 }
 bootstrap();

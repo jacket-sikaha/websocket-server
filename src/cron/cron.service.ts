@@ -2,19 +2,12 @@ import { Injectable, Logger } from '@nestjs/common';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { CronJob } from 'cron';
 import dayjs from 'dayjs';
-import { DingdingService } from 'src/dingding/dingding.service';
-import { GameType } from 'src/mhy/interfaces/game-type';
-import { MhyService } from 'src/mhy/mhy.service';
 
 @Injectable()
 export class CronService {
   private readonly logger = new Logger(CronService.name);
   //   注入 SchedulerRegistry
-  constructor(
-    private schedulerRegistry: SchedulerRegistry,
-    private mhyService: MhyService,
-    private dingdingService: DingdingService,
-  ) {}
+  constructor(private schedulerRegistry: SchedulerRegistry) {}
 
   // 生命周期函数
   onModuleInit() {
@@ -43,12 +36,6 @@ export class CronService {
   addCronJob(name: string, cronTime: string) {
     const job = new CronJob(cronTime, async () => {
       try {
-        const result = await Promise.all(
-          [GameType.Genshin, GameType.StarRail].map((item) =>
-            this.dingdingService.sendDiyGroupMsg(item),
-          ),
-        );
-        console.log('result', result);
       } catch (error) {
         console.error(error);
       }

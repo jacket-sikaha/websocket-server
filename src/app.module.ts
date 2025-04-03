@@ -2,6 +2,9 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { EventsModule } from './socket/events.module';
+import { OcrModule } from './ocr/ocr.module';
+import { EventsGateway } from './socket/events.gateway';
 
 @Module({
   // 激活作业调度
@@ -10,8 +13,12 @@ import { AppService } from './app.service';
     ConfigModule.forRoot(),
     // ScheduleModule.forRoot(),
     // CronModule,
+    EventsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    //  EventsGateway // 如果不是测试不推荐直接注入服务，会导致单例失效
+  ],
 })
 export class AppModule {}

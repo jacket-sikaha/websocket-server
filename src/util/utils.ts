@@ -5,6 +5,7 @@
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone'; // dependent on utc plugin
+import { join } from 'path';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -35,3 +36,6 @@ export const constructLog = (
 });
 
 export const getShanghaiDate = () => dayjs().tz('Asia/Shanghai');
+
+const _dirname = process.cwd();
+export const projectFolder = join(_dirname, 'tmp', 'upload');

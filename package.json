@@ -22,7 +22,8 @@
     "ddd": "rimraf ./node_modules",
     "module": "npx @nestjs/cli@latest g module",
     "controller": "npx @nestjs/cli@latest g controller",
-    "service": "npx @nestjs/cli@latest g service"
+    "service": "npx @nestjs/cli@latest g service",
+    "gen": "node generate.js"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.12",
@@ -46,6 +47,7 @@
     "@nestjs/testing": "^11.0.12",
     "@types/express": "^5.0.1",
     "@types/jest": "^29.5.14",
+    "@types/multer": "^1.4.12",
     "@types/node": "^20",
     "@types/supertest": "^6.0.3",
     "@typescript-eslint/eslint-plugin": "^8.29.0",

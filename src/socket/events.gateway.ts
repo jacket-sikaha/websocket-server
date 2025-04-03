@@ -56,14 +56,30 @@ export class EventsGateway {
 
   @SubscribeMessage('msg')
   handleEvent(@MessageBody() data: string, @ConnectedSocket() client: Socket) {
-    // console.log('data:', data, client.nsp, client.id);
-    // client.emit('msg', {
-    //   event: 'msg',
+    console.log('data:', data, client.id);
+    // client.emit('ack', {
     //   data: `Processed: ${data}`,
     // });
+
     return {
       event: 'msg',
       data: `Processed: ${data}`,
+    };
+  }
+
+  @SubscribeMessage('totalCount')
+  totalCount() {
+    return {
+      event: 'totalCount',
+      data: this.server.engine.clientsCount,
+    };
+  }
+
+  @SubscribeMessage('countInNamespace')
+  countInNamespace(@MessageBody() namespace: string) {
+    return {
+      event: 'countInNamespace',
+      data: this.server.of(namespace).sockets.size,
     };
   }
 

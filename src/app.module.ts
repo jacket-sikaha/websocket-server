@@ -13,12 +13,9 @@ import { EventsGateway } from './socket/events.gateway';
     ConfigModule.forRoot(),
     // ScheduleModule.forRoot(),
     // CronModule,
-    EventsModule,
+    OcrModule,
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-    //  EventsGateway // 如果不是测试不推荐直接注入服务，会导致单例失效
-  ],
+  providers: [AppService, EventsGateway],
 })
 export class AppModule {}

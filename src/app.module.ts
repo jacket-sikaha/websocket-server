@@ -5,7 +5,6 @@ import { AppService } from './app.service';
 import { EventsModule } from './socket/events.module';
 import { OcrModule } from './ocr/ocr.module';
 import { EventsGateway } from './socket/events.gateway';
-import { AaaModule } from './aaa/aaa.module';
 import { FileModule } from './file/file.module';
 
 @Module({
@@ -16,7 +15,6 @@ import { FileModule } from './file/file.module';
     // ScheduleModule.forRoot(),
     // CronModule,
     EventsModule,
-    AaaModule,
     FileModule,
   ],
   controllers: [AppController],

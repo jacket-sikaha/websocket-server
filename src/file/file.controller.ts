@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   MaxFileSizeValidator,
   ParseFilePipe,
   Post,
@@ -12,9 +13,18 @@ import { readFile } from 'fs/promises';
 import { join } from 'path';
 import { projectFolder } from 'src/util/utils';
 import { DownloadFileDto } from './download-file.dto';
+import { FileService } from './file.service';
 
 @Controller('share-file')
 export class FileController {
+  constructor(private readonly fileService: FileService) {}
+
+  @Get('getConnetIDMap')
+  test() {
+    const map = this.fileService.getConnetIDMap();
+    return map;
+  }
+
   @Post('upload')
   @UseInterceptors(
     FileInterceptor('file', {

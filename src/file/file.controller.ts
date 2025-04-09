@@ -41,8 +41,14 @@ export class FileController {
       }),
     )
     file: Express.Multer.File,
+    @Body('userId') userId: string,
   ) {
-    console.log(file);
+    console.log(file, userId);
+    if (!this.fileService.verifyUserId(userId)) {
+      return {
+        message: 'UserId is not valid',
+      };
+    }
     return {
       message: 'File uploaded successfully',
       data: {
@@ -55,7 +61,12 @@ export class FileController {
   }
 
   @Post('download')
-  async downloadFile(@Body() { fid, fileName }: DownloadFileDto) {
+  async downloadFile(@Body() { fid, fileName, userId }: DownloadFileDto) {
+    if (!this.fileService.verifyUserId(userId)) {
+      return {
+        message: 'UserId is not valid',
+      };
+    }
     const file = await readFile(join(projectFolder, fid));
     return { file, name: fileName };
   }

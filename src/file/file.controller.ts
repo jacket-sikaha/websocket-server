@@ -6,6 +6,7 @@ import {
   ParseFilePipe,
   Post,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -15,8 +16,10 @@ import { projectFolder } from 'src/util/utils';
 import { DownloadFileDto } from './download-file.dto';
 import { FileService } from './file.service';
 import { IDValidationPipe, IDValidationPipe22 } from './validation.pipe';
+import { RolesGuard } from './roles.guard';
 
 @Controller('share-file')
+// @UseGuards(new RolesGuard())
 export class FileController {
   constructor(private readonly fileService: FileService) {}
 
@@ -27,6 +30,7 @@ export class FileController {
   }
 
   @Post('upload')
+  @UseGuards(new RolesGuard())
   @UseInterceptors(
     FileInterceptor('file', {
       dest: projectFolder,
@@ -57,6 +61,7 @@ export class FileController {
   }
 
   @Post('download')
+  @UseGuards(new RolesGuard())
   async downloadFile(
     @Body('userId', IDValidationPipe22) userId: string,
     @Body() { fid, fileName }: DownloadFileDto,

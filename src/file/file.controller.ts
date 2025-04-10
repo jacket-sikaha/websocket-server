@@ -30,7 +30,7 @@ export class FileController {
   }
 
   @Post('upload')
-  @UseGuards(new RolesGuard())
+  @UseGuards(RolesGuard)
   @UseInterceptors(
     FileInterceptor('file', {
       dest: projectFolder,
@@ -46,7 +46,7 @@ export class FileController {
       }),
     )
     file: Express.Multer.File,
-    @Body('userId', IDValidationPipe22) userId: string,
+    @Body('userId', IDValidationPipe) userId: string,
   ) {
     console.log(file, userId);
     return {
@@ -61,9 +61,9 @@ export class FileController {
   }
 
   @Post('download')
-  @UseGuards(new RolesGuard())
+  @UseGuards(RolesGuard)
   async downloadFile(
-    @Body('userId', IDValidationPipe22) userId: string,
+    @Body('userId', IDValidationPipe) userId: string,
     @Body() { fid, fileName }: DownloadFileDto,
   ) {
     const file = await readFile(join(projectFolder, fid));

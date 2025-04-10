@@ -3,6 +3,7 @@ import { EventsGateway } from 'src/socket/events.gateway';
 
 @Injectable()
 export class FileService {
+  a = Math.random();
   constructor(private readonly eventsGateway: EventsGateway) {}
   onApplicationBootstrap() {
     console.log('FileService onApplicationBootstrap---------');

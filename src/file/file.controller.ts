@@ -14,6 +14,7 @@ import { join } from 'path';
 import { projectFolder } from 'src/util/utils';
 import { DownloadFileDto } from './download-file.dto';
 import { FileService } from './file.service';
+import { IDValidationPipe, IDValidationPipe22 } from './validation.pipe';
 
 @Controller('share-file')
 export class FileController {
@@ -41,14 +42,9 @@ export class FileController {
       }),
     )
     file: Express.Multer.File,
-    @Body('userId') userId: string,
+    @Body('userId', IDValidationPipe22) userId: string,
   ) {
     console.log(file, userId);
-    if (!this.fileService.verifyUserId(userId)) {
-      return {
-        message: 'UserId is not valid',
-      };
-    }
     return {
       message: 'File uploaded successfully',
       data: {
@@ -61,12 +57,10 @@ export class FileController {
   }
 
   @Post('download')
-  async downloadFile(@Body() { fid, fileName, userId }: DownloadFileDto) {
-    if (!this.fileService.verifyUserId(userId)) {
-      return {
-        message: 'UserId is not valid',
-      };
-    }
+  async downloadFile(
+    @Body('userId', IDValidationPipe22) userId: string,
+    @Body() { fid, fileName }: DownloadFileDto,
+  ) {
     const file = await readFile(join(projectFolder, fid));
     return { file, name: fileName };
   }

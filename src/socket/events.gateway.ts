@@ -30,7 +30,7 @@ export class EventsGateway {
 
   onApplicationBootstrap() {
     console.log(
-      `The module has been onApplicationBootstrap.`,
+      `EventsGateway has been onApplicationBootstrap.`,
       dayjs().format(),
     );
     instrument(this.server, {

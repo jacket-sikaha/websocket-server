@@ -17,6 +17,7 @@ import { DownloadFileDto } from './download-file.dto';
 import { FileService } from './file.service';
 import { RolesGuard } from './roles.guard';
 import { IDValidationPipe } from './validation.pipe';
+import { LoggingInterceptor } from './logging.interceptor';
 
 @Controller('share-file')
 export class FileController {
@@ -29,12 +30,14 @@ export class FileController {
   }
 
   @Post('upload')
-  // ？？？ FileInterceptor这个拦截器貌似会影响守卫获取body参数目前只能使用pipe了
+  // 处理 multipart/form-data 请求时，守卫获取body 参数为 undefined 的根本原因
+  // multipart/form-data 需要 multer 中间件解析，若守卫（Guard）在 multer 前执行，则无法获取已解析的 body
   // @UseGuards(RolesGuard)
   @UseInterceptors(
     FileInterceptor('file', {
       dest: projectFolder,
     }),
+    LoggingInterceptor,
   )
   uploadFile(
     @UploadedFile(

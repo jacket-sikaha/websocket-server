@@ -57,20 +57,24 @@ export class EventsGateway {
   }
 
   @SubscribeMessage('msg')
-  handleEvent(@MessageBody() data: string, @ConnectedSocket() client: Socket) {
-    console.log('data:', data, client.id);
+  handleEvent(
+    @MessageBody() data: MessageBodyDto | string,
+    @ConnectedSocket() client: Socket,
+  ) {
+    console.log('收到客户端数据data:', data, client.id);
     // client.emit('ack', {
     //   data: `Processed: ${data}`,
     // });
     // 发给除当前socket以外的所有socket
     client.broadcast.emit('msg', data);
     // 这里return 就只会原路发回给发送方的socket
-    const res: MessageBodyDto = isJSON(data)
-      ? Object.assign(JSON.parse(data), { source: 1 })
-      : {
-          data,
-          source: 1,
-        };
+    const res =
+      typeof data === 'string'
+        ? {
+            data,
+            source: 1,
+          }
+        : { ...data, source: 1 };
     return {
       event: 'msg',
       data: res,

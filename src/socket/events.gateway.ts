@@ -16,6 +16,7 @@ import { map } from 'rxjs/operators';
 import { Server, Socket } from 'socket.io';
 import { projectFolder } from 'src/util/utils';
 import { MessageBodyDto } from './message.dto';
+import { isJSON } from 'src/util';
 
 @WebSocketGateway({
   cors: {
@@ -56,10 +57,7 @@ export class EventsGateway {
   }
 
   @SubscribeMessage('msg')
-  handleEvent(
-    @MessageBody() data: MessageBodyDto,
-    @ConnectedSocket() client: Socket,
-  ) {
+  handleEvent(@MessageBody() data: string, @ConnectedSocket() client: Socket) {
     console.log('data:', data, client.id);
     // client.emit('ack', {
     //   data: `Processed: ${data}`,
@@ -67,12 +65,15 @@ export class EventsGateway {
     // 发给除当前socket以外的所有socket
     client.broadcast.emit('msg', data);
     // 这里return 就只会原路发回给发送方的socket
+    const res: MessageBodyDto = isJSON(data)
+      ? Object.assign(JSON.parse(data), { source: 1 })
+      : {
+          data,
+          source: 1,
+        };
     return {
       event: 'msg',
-      data: {
-        data,
-        ack: true,
-      },
+      data: res,
     };
   }
 

@@ -16,7 +16,6 @@ import { map } from 'rxjs/operators';
 import { Server, Socket } from 'socket.io';
 import { projectFolder } from 'src/util/utils';
 import { MessageBodyDto } from './message.dto';
-import { isJSON } from 'src/util';
 
 @WebSocketGateway({
   cors: {
@@ -60,7 +59,7 @@ export class EventsGateway {
   handleEvent(
     @MessageBody() data: MessageBodyDto | string,
     @ConnectedSocket() client: Socket,
-  ) {
+  ): WsResponse<unknown> {
     console.log('收到客户端数据data:', data, client.id);
     // client.emit('ack', {
     //   data: `Processed: ${data}`,
@@ -75,6 +74,8 @@ export class EventsGateway {
             source: 1,
           }
         : { ...data, source: 1 };
+    //  WsResponse<unknown> 的返回格式 只有 socket.on方法的回调才能获取
+    //  socket.emit的回调直接return数据的形式才能触发
     return {
       event: 'msg',
       data: res,

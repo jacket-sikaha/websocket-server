@@ -5,6 +5,7 @@ import {
   MaxFileSizeValidator,
   ParseFilePipe,
   Post,
+  StreamableFile,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -18,6 +19,7 @@ import { FileService } from './file.service';
 import { RolesGuard } from './roles.guard';
 import { IDValidationPipe } from './validation.pipe';
 import { LoggingInterceptor } from './logging.interceptor';
+import { createReadStream } from 'fs';
 
 @Controller('share-file')
 export class FileController {
@@ -70,6 +72,13 @@ export class FileController {
     @Body() { fid, fileName }: DownloadFileDto,
   ) {
     const file = await readFile(join(projectFolder, fid));
-    return { file, name: fileName };
+    return file;
+  }
+
+  @Post('download-stream')
+  @UseGuards(RolesGuard) // 采用守卫进行校验
+  async downloadStreamFile(@Body() { fid, fileName }: DownloadFileDto) {
+    const file = createReadStream(join(projectFolder, fid));
+    return new StreamableFile(file);
   }
 }

@@ -2,7 +2,7 @@ name: Publish Docker image
 
 on:
   push:
-    branches: ['main']
+    # branches: ['main']
     tags:
       - 'v*'
 env:
@@ -47,9 +47,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}} # 确保这里格式正确
           tags: |
-            type=ref,event=branch
             type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
 
       - name: Build and push Docker image
         id: push

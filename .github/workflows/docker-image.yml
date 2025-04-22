@@ -48,7 +48,6 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}} # 确保这里格式正确
           tags: |
             type=ref,event=branch
-            type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
 

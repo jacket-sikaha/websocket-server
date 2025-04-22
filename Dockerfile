@@ -6,7 +6,7 @@ WORKDIR /project
 RUN npm install -g pnpm
 
 # 复制 package.json 和 pnpm-lock.yaml 文件到工作目录
-COPY package.json pnpm-lock.yaml ./
+COPY package.json  ./
 
 # 安装项目依赖
 RUN pnpm install

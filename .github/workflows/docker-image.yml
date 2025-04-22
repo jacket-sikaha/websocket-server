@@ -1,12 +1,13 @@
 name: Publish Docker image
 
-# on:
-#   push:
-#     branches: ['main']
-
+on:
+  push:
+    branches: ['main']
+    tags:
+      - 'v*'
 env:
   REGISTRY: docker.io/sikaha # 或者 docker.io/your_username 等
-  IMAGE_NAME: ws-backend
+  IMAGE_NAME: websocket-server
 
 jobs:
   push_to_registry:
@@ -34,6 +35,7 @@ jobs:
       #     cat .env
 
       - name: Log in to Docker Hub
+        if: github.event_name != 'pull_request'
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
@@ -41,17 +43,22 @@ jobs:
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@v4 # 注意版本可能需要更新
+        uses: docker/metadata-action@v5 # 注意版本可能需要更新
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}} # 确保这里格式正确
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
 
       - name: Build and push Docker image
         id: push
-        uses: docker/build-push-action@v2 # 更新到v2，v3b5e8027fcad23fda98b2e3ac259d8d67585f671可能不是最新或推荐版本
+        uses: docker/build-push-action@v6 # 更新到v2，v3b5e8027fcad23fda98b2e3ac259d8d67585f671可能不是最新或推荐版本
         with:
           context: .
           file: ./Dockerfile
-          push: true
+          push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }} # 这里应该产出正确的标签格式，如 "ghcr.io/your_username/chat-by-websocket:main"
           labels: ${{ steps.meta.outputs.labels }}
 

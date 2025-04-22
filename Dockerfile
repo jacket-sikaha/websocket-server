@@ -43,4 +43,4 @@ RUN ls -a
 EXPOSE 3000
 
 # 运行 NestJS 应用
-CMD ["node", "/project/dist/main"]
+CMD ["npm", "start:prod"]

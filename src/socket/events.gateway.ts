@@ -20,7 +20,7 @@ import { MessageBodyDto } from './message.dto';
 @WebSocketGateway({
   cors: {
     origin: '*',
-    credentials: true,
+    // credentials: true,  // 与origin: '*'
   },
   maxHttpBufferSize: 5 * 1e8, // 500M
   // pingTimeout: 30000,

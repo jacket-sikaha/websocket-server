@@ -75,7 +75,7 @@ export class EventsGateway {
           }
         : { ...data, source: 1 };
     //  WsResponse<unknown> 的返回格式 只有 socket.on方法的回调才能获取
-    //  socket.emit的回调直接return数据的形式才能触发
+    //  客户端socket.emit的回调，直接return数据的形式才能触发
     return {
       event: 'msg',
       data: res,
@@ -88,6 +88,11 @@ export class EventsGateway {
       event: 'totalCount',
       data: this.server.engine.clientsCount,
     };
+  }
+
+  @SubscribeMessage('connected-users')
+  getConnetIDMap() {
+    return [...this.server.sockets.sockets.keys()];
   }
 
   @SubscribeMessage('countInNamespace')

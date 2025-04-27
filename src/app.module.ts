@@ -11,7 +11,7 @@ import { FileModule } from './file/file.module';
   // 激活作业调度
   // 所需要加载的module全部都要在根模块进行加载
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true }),
     // ScheduleModule.forRoot(),
     // CronModule,
     EventsModule,

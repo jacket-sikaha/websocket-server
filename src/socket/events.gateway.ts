@@ -1,6 +1,7 @@
 import {
   ConnectedSocket,
   MessageBody,
+  OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
@@ -19,21 +20,32 @@ import { MessageBodyDto } from './message.dto';
 
 @WebSocketGateway({
   cors: {
-    origin: '*',
+    origin: '',
     // credentials: true,  // 与origin: '*'
   },
   maxHttpBufferSize: 5 * 1e8, // 500M
   // pingTimeout: 30000,
 })
-export class EventsGateway {
+export class EventsGateway implements OnGatewayInit {
   @WebSocketServer()
   server: Server;
+
+  afterInit(server: Server) {
+    // 在网关初始化阶段直接修改配置（deepseek说不太好）
+    // 因为加载当前文件时，process.env.NODE_ENV的环境变量还未加载进来会一直是undefined
+    // 该阶段可以获取到process.env.NODE_ENV
+    console.log('server._opts:', server._opts); // 应输出 Server (socket.io)
+    server._opts.cors &&
+      (server._opts.cors['origin'] = process.env.NODE_ENV === 'dev' ? '*' : '');
+    console.log('server._opts:', server._opts); // 应输出 Server (socket.io)
+  }
 
   onApplicationBootstrap() {
     console.log(
       `EventsGateway has been onApplicationBootstrap.`,
       dayjs().format(),
     );
+
     instrument(this.server, {
       auth: {
         type: 'basic',
@@ -91,7 +103,7 @@ export class EventsGateway {
   }
 
   @SubscribeMessage('connected-users')
-  getConnetIDMap() {
+  getConnectIDMap() {
     return [...this.server.sockets.sockets.keys()];
   }
 

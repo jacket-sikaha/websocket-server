@@ -33,8 +33,11 @@ WORKDIR /project
 COPY --from=builder /project/dist ./dist
 COPY --from=builder /project/node_modules ./node_modules
 COPY --from=builder /project/.env ./.env
+COPY --from=builder /project/package.json ./package.json
+
 # 配置环境变量，内容为.env文件
 ENV cat .env
+ENV NODE_ENV=production
 
 # 查看当前工作目录
 RUN ls -a

@@ -9,6 +9,7 @@ async function bootstrap() {
   });
   const configService = app.get(ConfigService);
   app.useWebSocketAdapter(new SocketIoAdapter(app, configService));
+  console.log('process.env.NODE_ENV:', process.env.NODE_ENV);
   await app.listen(3000, () => {
     console.log('welcome to http://localhost:3000');
   });

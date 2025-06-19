@@ -60,7 +60,7 @@ export class EventsGateway {
     @MessageBody() data: MessageBodyDto | string,
     @ConnectedSocket() client: Socket,
   ): WsResponse<unknown> {
-    console.log('收到客户端数据data:', data, client.id);
+    console.log('msg---收到客户端数据data:', data, client.id);
     // client.emit('ack', {
     //   data: `Processed: ${data}`,
     // });
@@ -91,8 +91,15 @@ export class EventsGateway {
   }
 
   @SubscribeMessage('connected-users')
-  getConnetIDMap() {
-    return [...this.server.sockets.sockets.keys()];
+  getConnetIDMap(
+    @MessageBody() data: { broadcast: boolean },
+    @ConnectedSocket() client: Socket,
+  ) {
+    console.log('connected-users---收到客户端数据data:', data, client.id);
+    const res = [...this.server.sockets.sockets.keys()];
+    // 发给除当前socket以外的所有socket
+    if (data.broadcast) client.broadcast.emit('connected-users', res);
+    return res;
   }
 
   @SubscribeMessage('countInNamespace')

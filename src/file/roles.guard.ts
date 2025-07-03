@@ -13,7 +13,7 @@ export class RolesGuard implements CanActivate {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
-    console.log('context.getArgs():', request.body);
+    console.log('守卫获取请求参数:', request.body);
     const { userId } = context.switchToHttp().getRequest().body;
     if (!userId) return false;
     if (userId && !this.fileService.verifyUserId(userId)) {

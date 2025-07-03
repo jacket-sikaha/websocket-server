@@ -15,7 +15,7 @@ export class IDValidationPipe implements PipeTransform {
     console.log('IDValidationPipe onApplicationBootstrap---------');
   }
   transform(value: any, metadata: ArgumentMetadata) {
-    console.log('value:', value);
+    console.log('IDValidationPipe 校验参数:', value);
     if (!this.fileService.verifyUserId(value)) {
       throw new BadRequestException(`UserId(${value}) is not valid`);
     }

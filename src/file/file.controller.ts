@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -11,15 +12,16 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { readFile } from 'fs/promises';
+import * as fs from 'fs';
+import { createReadStream } from 'fs';
+import { access, readFile } from 'fs/promises';
 import { join } from 'path';
 import { projectFolder } from 'src/util/utils';
 import { DownloadFileDto } from './download-file.dto';
 import { FileService } from './file.service';
+import { LoggingInterceptor } from './logging.interceptor';
 import { RolesGuard } from './roles.guard';
 import { IDValidationPipe } from './validation.pipe';
-import { LoggingInterceptor } from './logging.interceptor';
-import { createReadStream } from 'fs';
 
 @Controller('share-file')
 export class FileController {
@@ -53,15 +55,11 @@ export class FileController {
     file: Express.Multer.File,
     @Body('userId', IDValidationPipe) userId: string,
   ) {
-    console.log(file, userId);
     return {
-      message: 'File uploaded successfully',
-      data: {
-        id: file.filename,
-        fileSize: file.size,
-        fileMimetype: file.mimetype,
-        fileOriginalName: file.originalname,
-      },
+      id: file.filename,
+      fileSize: file.size,
+      fileMimetype: file.mimetype,
+      fileOriginalName: file.originalname,
     };
   }
 
@@ -77,8 +75,23 @@ export class FileController {
 
   @Post('download-stream')
   @UseGuards(RolesGuard) // 采用守卫进行校验
-  async downloadStreamFile(@Body() { fid, fileName }: DownloadFileDto) {
-    const file = createReadStream(join(projectFolder, fid));
-    return new StreamableFile(file);
+  async downloadStreamFile(
+    @Body() { fid, fileName }: DownloadFileDto,
+  ): Promise<StreamableFile> {
+    const filePath = join(projectFolder, fid);
+    try {
+      // 同步检查文件是否存在且可读
+      await access(filePath, fs.constants.F_OK | fs.constants.R_OK);
+      const file = createReadStream(filePath);
+      return new StreamableFile(file);
+    } catch (error) {
+      if (error.code === 'ENOENT') {
+        throw new BadRequestException('文件不存在');
+      } else if (error.code === 'EACCES') {
+        throw new BadRequestException('没有文件读取权限');
+      } else {
+        throw new BadRequestException(`文件读取失败: ${error.message}`);
+      }
+    }
   }
 }

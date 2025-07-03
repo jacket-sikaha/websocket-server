@@ -3,12 +3,7 @@
 // var timezone = require('dayjs/plugin/timezone');
 
 import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone'; // dependent on utc plugin
 import { join } from 'path';
-
-dayjs.extend(utc);
-dayjs.extend(timezone);
 
 export type messageType = {
   msg: string;

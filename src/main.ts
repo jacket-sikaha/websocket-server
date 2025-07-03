@@ -1,9 +1,15 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
-import { SocketIoAdapter } from './socket/SocketIoAdapter';
-import { TransformInterceptor } from './common/interceptors/transform.interceptor';
+import { NestFactory } from '@nestjs/core';
+import dayjs from 'dayjs';
+import timezone from 'dayjs/plugin/timezone'; // dependent on utc plugin
+import utc from 'dayjs/plugin/utc';
+import { AppModule } from './app.module';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
+import { TransformInterceptor } from './common/interceptors/transform.interceptor';
+import { SocketIoAdapter } from './socket/SocketIoAdapter';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {

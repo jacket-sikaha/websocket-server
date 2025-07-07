@@ -15,8 +15,8 @@ import { join } from 'path';
 import { from, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Server, Socket } from 'socket.io';
-import { projectFolder } from 'src/util/utils';
 import { MessageBodyDto } from './message.dto';
+import { projectFolder } from '@/util/utils';
 
 @WebSocketGateway({
   cors: {
@@ -137,7 +137,7 @@ export class EventsGateway implements OnGatewayInit {
       }
     }
     try {
-      let uuid = Date.now();
+      const uuid = Date.now();
       await writeFile(join(projectFolder, `${uuid}-${name}`), data);
       //  cb函数只能发送的客户端能接收并执行，其他客户端没有响应
       // io.emit('upload', {

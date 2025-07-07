@@ -16,12 +16,12 @@ import * as fs from 'fs';
 import { createReadStream } from 'fs';
 import { access, readFile } from 'fs/promises';
 import { join } from 'path';
-import { projectFolder } from 'src/util/utils';
 import { DownloadFileDto } from './download-file.dto';
 import { FileService } from './file.service';
 import { LoggingInterceptor } from './logging.interceptor';
 import { RolesGuard } from './roles.guard';
 import { IDValidationPipe } from './validation.pipe';
+import { projectFolder } from '@/util/utils';
 
 @Controller('share-file')
 export class FileController {

@@ -1,5 +1,5 @@
+import { EventsGateway } from '@/socket/events.gateway';
 import { Injectable } from '@nestjs/common';
-import { EventsGateway } from 'src/socket/events.gateway';
 
 @Injectable()
 export class FileService {

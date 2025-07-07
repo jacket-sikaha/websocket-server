@@ -1,18 +1,33 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
 import { FileController } from './file.controller';
+import { EventsGateway } from '@/socket/events.gateway';
+import { FileService } from './file.service';
+import { projectFolder } from '@/util/utils';
+import { readFile } from 'fs/promises';
+import { join } from 'path';
 
 describe('FileController', () => {
-  let controller: FileController;
-
+  let fileController: FileController;
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+    const moduleRef = await Test.createTestingModule({
       controllers: [FileController],
+      providers: [EventsGateway, FileService],
     }).compile();
 
-    controller = module.get<FileController>(FileController);
+    fileController = moduleRef.get(FileController);
   });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
+  it('fileController downloadFile', async () => {
+    const mockFileData = await readFile(
+      join(projectFolder, '1ea7994bb5e5a8b4a6e08b40dd8e0e5c'),
+    );
+
+    const res = await fileController.downloadFile({
+      fid: '1ea7994bb5e5a8b4a6e08b40dd8e0e5c',
+      fileName: 'test.txt',
+      userId: '123',
+    });
+    console.log('data', res);
+    expect(res).toEqual(mockFileData);
   });
 });
